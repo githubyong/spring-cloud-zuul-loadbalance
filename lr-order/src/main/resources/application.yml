@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: ordersvc
+
+server:
+  port: 8001
+  servlet:
+    context-path: /orderserver
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: @eureka.client.serviceUrl.defaultZone@
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    metadata-map.management.context-path: ${server.servlet.context-path}/actuator
+    lease-renewal-interval-in-seconds: 1                #定时向eureka服务端发送健康心跳，更新服务端上该服务的最后健康时间
+    lease-expiration-duration-in-seconds: 3
+
+debug: false

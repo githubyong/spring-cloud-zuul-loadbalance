@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: gatewaysvc
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+    loadbalancer:
+      retry:
+        enabled: true
+    config:
+      discovery:
+        enabled: true
+server:
+  port: 8090
+#  servlet:
+#    context-path: /gateserver
+
+eureka:
+  client:
+    healthcheck:
+      enabled: true
+    service-url:
+      defaultZone: @eureka.client.serviceUrl.defaultZone@
+    registry-fetch-interval-seconds: 5
+  instance:
+    prefer-ip-address: true
+    metadata-map.management.context-path: ${server.servlet.context-path}/actuator
+    lease-renewal-interval-in-seconds: 1                #定时向eureka服务端发送健康心跳，更新服务端上该服务的最后健康时间
+    lease-expiration-duration-in-seconds: 3                #这个服务多久没有心跳视为下线
+
+hystrix:
+  command:
+    default:  #default全局有效，service id指定应用有效
+      execution:
+        timeout:
+          #如果enabled设置为false，则请求超时交给ribbon控制,为true,则超时作为熔断根据
+          enabled: true
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 20000 #断路器超时时间，默认1000ms
+logging:
+  level:
+    ROOT: INFO
